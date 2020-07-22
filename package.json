@@ -1,0 +1,24 @@
+{
+  "name": "embold-github-action",
+  "version": "1.0.0",
+  "description": "Embold Github Action",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/embold/embold-github-action.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/embold/embold-github-action/issues"
+  },
+  "homepage": "https://github.com/embold/embold-github-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/github": "^4.0.0"
+  }
+}

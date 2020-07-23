@@ -22,11 +22,11 @@ async function launchScan(emboldUrl, token, repoUid) {
 
 try {
     const emboldUrl = core.getInput('emboldUrl');
-    console.log(`emboldUrl: ${emboldUrl}`);
-
     const token = core.getInput('emboldToken');
     const repoUid = core.getInput('emboldRepoUid');
-    console.log(`emboldRepoUid: ${repoUid}`);
+
+    const payload = JSON.stringify(github.context.payload, undefined, 2)
+
     launchScan(emboldUrl, token, repoUid);
     core.setOutput("status", "SUCCESS");
 

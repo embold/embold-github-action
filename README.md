@@ -1,21 +1,32 @@
-# Hello world javascript action
+# Embold scan action
 
-This action prints "Hello World" or "Hello" + the name of a person to greet to the log.
+This action run an Embold scan for your repository on a remote Embold server
 
 ## Inputs
 
-### `who-to-greet`
+### `emboldUrl`
 
-**Required** The name of the person to greet. Default `"World"`.
+**Required** URL of your Embold instance
+
+### `emboldToken`
+
+**Required** URL of your Embold instance (recommended: Use a [secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets))
+
+### `emboldRepoUid`
+
+**Required** Repository UID of the Embold repository where the results will be published
 
 ## Outputs
 
-### `time`
+### `status`
 
-The time we greeted you.
+Status of the launch of scan
 
 ## Example usage
-
-uses: actions/hello-world-javascript-action@v1
+```yaml
+uses: actions/embold-github-action@v1
 with:
-  who-to-greet: 'Mona the Octocat'
+    emboldUrl: ${{ secrets.EMB_URL }}
+    emboldToken: ${{ secrets.EMB_TOKEN }}
+    emboldRepoUid: ${{ secrets.EMB_REPOUID }}
+```

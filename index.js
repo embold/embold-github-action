@@ -3,21 +3,18 @@ const github = require('@actions/github');
 
 const axios = require('axios');
 
-async function launchScan(emboldUrl, token, repoUid) {
+async function launchScan(emboldUrl, token, repoUid, branch) {
 
-  console.log(`Launching Embold scan for repo: ${repoUid} at: ${emboldUrl}`);
-  const config = {
-    method: 'post',
-    url: emboldUrl + '/api/v1/repositories/' + repoUid + '/scan',
-    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/x-www-form-urlencoded' }
-  }
+    console.log(`Launching Embold scan for repo: ${repoUid} at: ${emboldUrl}`);
+    try {
 
-  try {
-    let res = await axios(config);
-    console.log(res.data.status);
-  } catch(error) {
-    core.setFailed(error.message);
-  }
+        let res = await axios.post(emboldUrl + '/api/v1/repositories/' + repoUid + '/scan', `repoBranchOrTag=${branch}`, {
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/x-www-form-urlencoded' }
+          });
+        console.log(res.data.status);
+    } catch(error) {
+        core.setFailed(error.message);
+    }
 }
 
 try {
@@ -26,8 +23,7 @@ try {
     const repoUid = core.getInput('emboldRepoUid');
 
     const payload = JSON.stringify(github.context.payload, undefined, 2);
-    console.log(`The event payload: ${payload}`);
-    launchScan(emboldUrl, token, repoUid);
+    launchScan(emboldUrl, token, repoUid, payload.ref);
     core.setOutput("status", "SUCCESS");
 
 } catch (error) {

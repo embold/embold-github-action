@@ -16,6 +16,7 @@ async function launchScan(emboldUrl, token, repoUid) {
     let res = await axios(config);
     console.log(res.data.status);
   } catch(error) {
+    console.log(error.response.data);
     core.setFailed(error.message);
   }
 }
@@ -26,6 +27,7 @@ try {
     const repoUid = core.getInput('emboldRepoUid');
 
     const payload = JSON.stringify(github.context.payload, undefined, 2)
+    console.log(`The event payload: ${payload}`);
 
     launchScan(emboldUrl, token, repoUid);
     core.setOutput("status", "SUCCESS");

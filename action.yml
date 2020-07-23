@@ -1,13 +1,21 @@
 name: 'Embold'
 description: 'Scan your code with Embold'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  emboldUrl:
+    description: 'URL of your Embold instance'
     required: true
-    default: 'World'
+    default: ''
+  emboldToken:
+    description: 'Your Embold access token'
+    required: true
+    default: ''
+  emboldRepoUid:
+    description: 'Embold repository UID where the results will be published'
+    required: true
+    default: ''
 outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  status:
+    description: 'Status of the scan'
 runs:
   using: 'node12'
   main: 'index.js'

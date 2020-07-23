@@ -25,7 +25,8 @@ try {
     const token = core.getInput('emboldToken');
     const repoUid = core.getInput('emboldRepoUid');
 
-    const payload = JSON.stringify(github.context.payload, undefined, 2)
+    const payload = JSON.stringify(github.context.payload, undefined, 2);
+    console.log(`The event payload: ${payload}`);
     launchScan(emboldUrl, token, repoUid);
     core.setOutput("status", "SUCCESS");
 

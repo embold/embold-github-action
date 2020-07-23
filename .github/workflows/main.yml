@@ -3,17 +3,17 @@ on: [push]
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: Run Embold scan
     steps:
-      # To use this repository's private action,
-      # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Hello world action step
+      - name: Embold scan step
         uses: ./ # Uses an action in the root directory
-        id: hello
+        id: embold
         with:
-          who-to-greet: 'Embold'
+          emboldUrl: ${{ secrets.EMB_URL }}
+          emboldToken: ${{ secrets.EMB_TOKEN }}
+          emboldRepoUid: ${{ secrets.EMB_REPOUID }}
       # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+      - name: Outputs the san status
+        run: echo "The time was ${{ steps.embold.outputs.status }}"

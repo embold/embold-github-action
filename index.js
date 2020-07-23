@@ -22,8 +22,8 @@ try {
     const token = core.getInput('emboldToken');
     const repoUid = core.getInput('emboldRepoUid');
 
-    const payload = JSON.stringify(github.context.payload, undefined, 2);
-    launchScan(emboldUrl, token, repoUid, payload.ref);
+    // const payload = JSON.stringify(github.context.payload, undefined, 2);
+    launchScan(emboldUrl, token, repoUid, github.context.payload.ref);
     core.setOutput("status", "SUCCESS");
 
 } catch (error) {

@@ -27,7 +27,8 @@ async function waitForScanStatus(emboldUrl, token, repoUid, scanId) {
             await new Promise(r => setTimeout(r, 2000));
         }
 
-        // If we reached here we still didn't get the expected status. This could be because the scm sync is taking longer (e.g. large repo), so we can still return
+        // If we reached here we still didn't get the expected status. 
+        // This could be because the scm sync is taking longer (e.g. large repo), so we can still return
         if (status && status.data.currentStep === 'UPDATING_SOURCES') {
             console.log(`Scan with id ${scanId} is updating sources`);
         }

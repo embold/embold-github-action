@@ -52,12 +52,19 @@ runs:
     - name: Run Static Code Analysis
       shell: bash
       continue-on-error: ${{ inputs.continueOnError == 'true' }}
+      env:
+        EMBOLD_TOKEN: ${{ inputs.emboldToken }}
       run: |
+        VERBOSE_FLAG=""
+        if [ "${{ inputs.verbose }}" = "true" ]; then
+          VERBOSE_FLAG="-v"
+        fi
+        
         ./browserstack-codequality-scanner/bin/embold-scanner analyse \
-        -u ${{ inputs.emboldUrl }} \
-        -t ${{ inputs.emboldToken }} \
-        -r ${{ inputs.emboldRepoUid }} \
-        -c ${{ inputs.repositoryConfigPath }} \
-        -d ${{ inputs.tempDirectory }} \
-        -b ${{ inputs.baseDirectory }} \
-        ${{ inputs.verbose == 'true' && '-v' || '' }}
+        -u "${{ inputs.emboldUrl }}" \
+        -t "$EMBOLD_TOKEN" \
+        -r "${{ inputs.emboldRepoUid }}" \
+        -c "${{ inputs.repositoryConfigPath }}" \
+        -d "${{ inputs.tempDirectory }}" \
+        -b "${{ inputs.baseDirectory }}" \
+        $VERBOSE_FLAG

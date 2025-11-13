@@ -9,65 +9,65 @@ See [LICENSE](./LICENSE).
 
 ## Inputs
 
-### `emboldUrl`
+#### `emboldUrl`
 
 **Required** URL of your Embold instance. Default: `https://packages.embold.io/`
 
-### `emboldToken`
+#### `emboldToken`
 
 **Required** Your Embold access token (recommended: Use a [secret](https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets))
 
-### `emboldRepoUid`
+#### `emboldRepoUid`
 
 **Required** Repository UID of the Embold repository where the results will be published. [How to get your repository UID?](https://docs.embold.io/projects-repositories/#get-repository-uid)
 
-### `scannerDownloadUrl`
+#### `scannerDownloadUrl`
 
 **Optional** URL to download the BrowserStack CQ Scanner. Default: `https://v1.embold.io/nfs/CLI/browserstack-codequality-scanner.tar.gz`
 
-### `repositoryConfigPath`
+#### `repositoryConfigPath`
 
 **Optional** Path to the repository configuration JSON file. Default: `repository-configuration.json`
 
-### `downloadConfig`
+#### `downloadConfig`
 
 **Optional** Download repository configuration from Embold server. Default: `false`
 
-### `configDownloadPath`
+#### `configDownloadPath`
 
 **Optional** Path where downloaded config will be saved. Default: `repository-configuration.json`
 
-### `tempDirectory`
+#### `tempDirectory`
 
 **Optional** Temporary directory for scanner artifacts. Default: `./temp`
 
-### `baseDirectory`
+#### `baseDirectory`
 
 **Optional** Base directory of the source code to scan. Default: `.`
 
-### `verbose`
+#### `verbose`
 
 **Optional** Enable verbose logging. Default: `true`
 
-### `qualityGate`
+#### `qualityGate`
 
 **Optional** Enable quality gate checking. Default: `false`
 
-### `continueOnError`
+#### `continueOnError`
 
 **Optional** Continue workflow execution even if scan fails. Default: `true`
 
 ## Outputs
 
-### `status`
+#### `status`
 
 Status of the scan
 
-### `qualityGateStatus`
+#### `qualityGateStatus`
 
 Quality gate status (PASSED/FAILED)
 
-### `qualityGateData`
+#### `qualityGateData`
 
 Quality gate detailed data
 

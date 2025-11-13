@@ -41,6 +41,10 @@ inputs:
     description: 'Enable verbose logging'
     required: false
     default: 'true'
+  qualityGate:
+    description: 'Enable quality gate checking'
+    required: false
+    default: 'false'
   continueOnError:
     description: 'Continue workflow execution even if scan fails'
     required: false
@@ -48,6 +52,12 @@ inputs:
 outputs:
   status:
     description: 'Status of the scan'
+  qualityGateStatus:
+    description: 'Quality gate status (PASSED/FAILED)'
+    value: ${{ steps.quality-gate.outputs.status }}
+  qualityGateData:
+    description: 'Quality gate detailed data'
+    value: ${{ steps.quality-gate.outputs.data }}
 runs:
   using: 'composite'
   steps:
@@ -80,6 +90,11 @@ runs:
           VERBOSE_FLAG="-v"
         fi
         
+        QG_FLAG=""
+        if [ "${{ inputs.qualityGate }}" = "true" ]; then
+          QG_FLAG="-qg"
+        fi
+        
         ./browserstack-codequality-scanner/bin/embold-scanner analyse \
         -u "${{ inputs.emboldUrl }}" \
         -t "$EMBOLD_TOKEN" \
@@ -87,4 +102,26 @@ runs:
         -c "${{ inputs.repositoryConfigPath }}" \
         -d "${{ inputs.tempDirectory }}" \
         -b "${{ inputs.baseDirectory }}" \
-        $VERBOSE_FLAG
+        $VERBOSE_FLAG \
+        $QG_FLAG
+    
+    - name: Get Quality Gate Status
+      if: ${{ inputs.qualityGate == 'true' }}
+      id: quality-gate
+      shell: bash
+      env:
+        EMBOLD_TOKEN: ${{ inputs.emboldToken }}
+      run: |
+        echo "Fetching quality gate status..."
+        
+        response=$(curl --silent --http1.1 -X GET \
+        "${{ inputs.emboldUrl }}/api/v1/repositories/${{ inputs.emboldRepoUid }}/qualitygateprofiles/status" \
+        -H "Authorization: Bearer $EMBOLD_TOKEN")
+        
+        status=$(echo "$response" | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+        
+        echo "Quality Gate Status: $status"
+        echo "status=$status" >> $GITHUB_OUTPUT
+        echo "data=$response" >> $GITHUB_OUTPUT
+        
+        echo "::notice title=Quality Gate::Status: $status"

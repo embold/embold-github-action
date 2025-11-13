@@ -19,7 +19,7 @@ See [LICENSE](./LICENSE).
 
 ### `emboldRepoUid`
 
-**Required** Repository UID of the Embold repository where the results will be published
+**Required** Repository UID of the Embold repository where the results will be published. [How to get your repository UID?](https://docs.embold.io/projects-repositories/#get-repository-uid)
 
 ### `scannerDownloadUrl`
 

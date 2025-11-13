@@ -2,6 +2,11 @@
 
 This action downloads the BrowserStack CQ Scanner (Embold scanner CLI) and runs static code analysis on your repository locally.
 
+## License
+
+Sources and documentation in this repository are released under the AGPL v3.
+See [LICENSE](./LICENSE).
+
 ## Inputs
 
 ### `emboldUrl`
@@ -24,6 +29,14 @@ This action downloads the BrowserStack CQ Scanner (Embold scanner CLI) and runs 
 
 **Optional** Path to the repository configuration JSON file. Default: `repository-configuration.json`
 
+### `downloadConfig`
+
+**Optional** Download repository configuration from Embold server. Default: `false`
+
+### `configDownloadPath`
+
+**Optional** Path where downloaded config will be saved. Default: `repository-configuration.json`
+
 ### `tempDirectory`
 
 **Optional** Temporary directory for scanner artifacts. Default: `./temp`
@@ -36,6 +49,10 @@ This action downloads the BrowserStack CQ Scanner (Embold scanner CLI) and runs 
 
 **Optional** Enable verbose logging. Default: `true`
 
+### `qualityGate`
+
+**Optional** Enable quality gate checking. Default: `false`
+
 ### `continueOnError`
 
 **Optional** Continue workflow execution even if scan fails. Default: `true`
@@ -45,6 +62,14 @@ This action downloads the BrowserStack CQ Scanner (Embold scanner CLI) and runs 
 ### `status`
 
 Status of the scan
+
+### `qualityGateStatus`
+
+Quality gate status (PASSED/FAILED)
+
+### `qualityGateData`
+
+Quality gate detailed data
 
 ## Example Usage
 
@@ -59,20 +84,35 @@ Status of the scan
     emboldRepoUid: ${{ secrets.EMBOLD_REPO_UID }}
 ```
 
-### Advanced Usage with Custom Configuration
+### Download Repository Config Automatically
 
 ```yaml
 - name: Run Embold Scan
   uses: embold/embold-github-action@v1
   with:
-    emboldUrl: https://packages.embold.io/
+    emboldUrl: https://demo.embold.io/
     emboldToken: ${{ secrets.EMBOLD_TOKEN }}
-    emboldRepoUid: 7205368b7f51aa0dde425b5a9065166f
-    repositoryConfigPath: config/repository-configuration.json
-    baseDirectory: ./src
-    tempDirectory: ./embold-temp
-    verbose: true
-    continueOnError: false
+    emboldRepoUid: 81aba9b3940bbf35aac36dd3e4a45562
+    downloadConfig: 'true'
+```
+
+### Enable Quality Gate
+
+```yaml
+- name: Run Embold Scan with Quality Gate
+  id: embold-scan
+  uses: embold/embold-github-action@v1
+  with:
+    emboldUrl: https://demo.embold.io/
+    emboldToken: ${{ secrets.EMBOLD_TOKEN }}
+    emboldRepoUid: 81aba9b3940bbf35aac36dd3e4a45562
+    qualityGate: 'true'
+
+- name: Check Quality Gate Result
+  if: steps.embold-scan.outputs.qualityGateStatus == 'FAILED'
+  run: |
+    echo "Quality gate failed!"
+    exit 1
 ```
 
 ### Complete Workflow Example
@@ -102,20 +142,23 @@ jobs:
           emboldRepoUid: ${{ secrets.EMBOLD_REPO_UID }}
           repositoryConfigPath: repository-configuration.json
           verbose: true
+          qualityGate: 'true'
 ```
 
 ## Prerequisites
 
-- A repository configuration JSON file (default: `repository-configuration.json` in the root directory)
+- A repository configuration JSON file (default: `repository-configuration.json` in the root directory) or enable `downloadConfig`
 - Embold access token stored as a GitHub secret
 - Embold repository UID
 
 ## How It Works
 
-1. Downloads the BrowserStack CQ Scanner from the specified URL
-2. Extracts the scanner archive
-3. Runs the Embold scanner with the provided configuration
-4. Publishes results to the specified Embold repository
+1. Optionally downloads the repository configuration from Embold server
+2. Downloads the BrowserStack CQ Scanner from the specified URL
+3. Extracts the scanner archive
+4. Runs the Embold scanner with the provided configuration
+5. Publishes results to the specified Embold repository
+6. Optionally checks and outputs the quality gate status
 
 ## Support
 

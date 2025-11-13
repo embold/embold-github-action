@@ -21,6 +21,14 @@ inputs:
     description: 'Path to the repository configuration JSON file'
     required: false
     default: 'repository-configuration.json'
+  downloadConfig:
+    description: 'Download repository configuration from Embold server'
+    required: false
+    default: 'false'
+  configDownloadPath:
+    description: 'Path where downloaded config will be saved'
+    required: false
+    default: 'repository-configuration.json'
   tempDirectory:
     description: 'Temporary directory for scanner artifacts'
     required: false
@@ -43,6 +51,18 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - name: Download Repository Configuration
+      if: ${{ inputs.downloadConfig == 'true' }}
+      shell: bash
+      env:
+        EMBOLD_TOKEN: ${{ inputs.emboldToken }}
+      run: |
+        curl --silent --location --request GET \
+        "${{ inputs.emboldUrl }}/api/v1/repositories/${{ inputs.emboldRepoUid }}/scans/config/download" \
+        --header "Authorization: Bearer $EMBOLD_TOKEN" \
+        -o "${{ inputs.configDownloadPath }}"
+        echo "Repository configuration downloaded to ${{ inputs.configDownloadPath }}"
+    
     - name: Download and Unpack BrowserStack CQ Scanner
       shell: bash
       run: |

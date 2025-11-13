@@ -115,10 +115,10 @@ runs:
         echo "Fetching quality gate status..."
         
         response=$(curl --silent --http1.1 -X GET \
-        "${{ inputs.emboldUrl }}/api/v1/repositories/${{ inputs.emboldRepoUid }}/qualitygateprofiles/status" \
+        "${{ inputs.emboldUrl }}/api/v1/repositories/${{ inputs.emboldRepoUid }}/qualitygateprofiles" \
         -H "Authorization: Bearer $EMBOLD_TOKEN")
         
-        status=$(echo "$response" | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+        status=$(echo "$response" | grep -o '"status":"[^"]*"' | head -1 | cut -d'"' -f4)
         
         echo "Quality Gate Status: $status"
         echo "status=$status" >> $GITHUB_OUTPUT

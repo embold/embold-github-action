@@ -2,9 +2,9 @@ name: 'Embold'
 description: 'Scan your code with Embold'
 inputs:
   emboldUrl:
-    description: 'URL of your Embold instance'
+    description: 'URL of your Embold instance (e.g., https://packages.embold.io/)'
     required: true
-    default: ''
+    default: 'https://packages.embold.io/'
   emboldToken:
     description: 'Your Embold access token'
     required: true
@@ -13,9 +13,51 @@ inputs:
     description: 'Embold repository UID where the results will be published'
     required: true
     default: ''
+  scannerDownloadUrl:
+    description: 'URL to download the BrowserStack CQ Scanner'
+    required: false
+    default: 'https://v1.embold.io/nfs/CLI/browserstack-codequality-scanner.tar.gz'
+  repositoryConfigPath:
+    description: 'Path to the repository configuration JSON file'
+    required: false
+    default: 'repository-configuration.json'
+  tempDirectory:
+    description: 'Temporary directory for scanner artifacts'
+    required: false
+    default: './temp'
+  baseDirectory:
+    description: 'Base directory of the source code to scan'
+    required: false
+    default: '.'
+  verbose:
+    description: 'Enable verbose logging'
+    required: false
+    default: 'true'
+  continueOnError:
+    description: 'Continue workflow execution even if scan fails'
+    required: false
+    default: 'true'
 outputs:
   status:
     description: 'Status of the scan'
 runs:
-  using: 'node12'
-  main: 'index.js'
+  using: 'composite'
+  steps:
+    - name: Download and Unpack BrowserStack CQ Scanner
+      shell: bash
+      run: |
+        curl ${{ inputs.scannerDownloadUrl }} -o browserstack-codequality-scanner-archive.tar.gz
+        tar xvf browserstack-codequality-scanner-archive.tar.gz
+    
+    - name: Run Static Code Analysis
+      shell: bash
+      continue-on-error: ${{ inputs.continueOnError == 'true' }}
+      run: |
+        ./browserstack-codequality-scanner/bin/embold-scanner analyse \
+        -u ${{ inputs.emboldUrl }} \
+        -t ${{ inputs.emboldToken }} \
+        -r ${{ inputs.emboldRepoUid }} \
+        -c ${{ inputs.repositoryConfigPath }} \
+        -d ${{ inputs.tempDirectory }} \
+        -b ${{ inputs.baseDirectory }} \
+        ${{ inputs.verbose == 'true' && '-v' || '' }}
